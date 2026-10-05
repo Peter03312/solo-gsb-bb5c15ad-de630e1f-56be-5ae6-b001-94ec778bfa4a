@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: label-proofreading:latest
+    container_name: label-proofreading
+    ports:
+      - "3000:3000"
+    environment:
+      # 会话 Cookie 的签名密钥，生产部署请务必改成随机长字符串：
+      #   openssl rand -hex 32
+      AUTH_SECRET: "please-change-me-to-a-random-secret"
+      # 数据库文件位置（绑定挂载到宿主机 ./data，首次启动自动初始化；
+      # 删除该目录后重启即可重置全部数据）
+      DB_FILE: "/data/app.sqlite"
+      PORT: "3000"
+      # 仅在通过 HTTPS 访问时设为 true
+      COOKIE_SECURE: "false"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
